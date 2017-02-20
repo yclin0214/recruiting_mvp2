@@ -45,15 +45,14 @@ def add_message(phone_number, text_content):
     print ("Successfully saved")
     return 
 
-def get_all_text():    
-    for entry in Message.objects:
-        print entry.text_contents
-    return
-
-def get_all_numbers():
-    for entry in Message.objects:
-        print entry.phone_number
-    return
+def get_all_information():  
+    all_entries = Message.objects.all()
+    candidate_number = len(all_entries)
+    candidate_dict = {}
+    candidate_dict["Number of total candidates"] = candidate_number
+    for entry in all_entries:
+        candidate_dict[entry.phone_number] = entry.text_contents
+    return json.dumps(candidate_dict)
 
 #Twilio helper functions defined below
 def send_SMS(phone_number, text_content):
@@ -86,7 +85,8 @@ def receive_SMS(request):
     else:
         add_message(phone_number, text_content)
     send_SMS(phone_number, "I have received your info")
-
     return HttpResponse('Success')
 
+def view_statistics(request):
+    return HttpResponse(get_all_information())
 
