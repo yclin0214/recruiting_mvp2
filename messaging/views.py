@@ -11,6 +11,13 @@ from models import Message
 
 from twilio.rest import TwilioRestClient
 
+MESSAGE = ["Thanks for using SmartHire. Please provide some information so we can help you find the ideal job. First, please provide your name and location.",
+           "Great. Are you looking for full-time or part-time job? And in what industries?",
+           "Thanks for the response. Can you also tell us your availability for work? (For example, Wednesday evening 7pm - 10pm, Sunday morning, etc.)",
+           "One more question, what’s your current education level and your expected salary?",
+           "Last one, how many years of work experience do you have and in what positions?",
+           "Thanks for all your response. Once we find a good match for you, SmartHire will get back to you ASAP. Meanwhile, please feel free to provide us more information by texting to this number."]
+
 def concate_jsonify(json_string, new_string):
     if json_string is None:
         empty_list = []
@@ -41,9 +48,10 @@ def check_number_exist(phone_number):
 def add_message(phone_number, text_content):
     entry = Message.objects.get(phone_number=phone_number)
     entry.text_contents = concate_jsonify(entry.text_contents, text_content)
+    entry.message_count = entry.message_count + 1
     entry.save()
     print ("Successfully saved")
-    return 
+    return entry.message_count
 
 def get_all_information():  
     all_entries = Message.objects.all()
@@ -81,10 +89,14 @@ def receive_SMS(request):
     exist = check_number_exist(phone_number)
     print ("exist: " + str(exist))
     if exist is not True:
+        text_to_send = MESSAGE[0]
         create_entry(phone_number, text_content)
+        send_SMS(phone_number, text_to_send)
     else:
-        add_message(phone_number, text_content)
-    send_SMS(phone_number, "I have received your info")
+        count = add_message(phone_number, text_content)
+        if count < 7:
+            text_to_send = MESSAGE[count]
+            send_SMS(phone_number, text_to_send)
     return HttpResponse('Success')
 
 def view_statistics(request):

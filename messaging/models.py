@@ -8,6 +8,7 @@ class Message(models.Model):
     last_update = models.DateTimeField('last update')
     acquired_date = models.DateTimeField('date created')
     text_contents = models.TextField('text contents')
+    message_count = models.IntegerField(default=0)
     def __str__(self):
         return self.phone_number + " " + "entry"
 
