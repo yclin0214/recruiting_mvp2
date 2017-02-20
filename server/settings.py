@@ -25,10 +25,15 @@ SECRET_KEY = 'u1#shhzwci=1xh8+ny8me*hbbu@n0qsmh_4&fl5z-cwuj8h17+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [u'ef4c9929.ngrok.io']
 
 
 # Application definition
+GLOBAL_VAR = {
+    'ACCOUNT_SID': 'ACb033d486788e20c1d9731d37763d5755',
+    'AUTH_TOKEN': 'd09b41921f3b6774939bfc2514cfc4dd',
+    'TWILIO_NUMBER': '+14088161049',
+}
 
 INSTALLED_APPS = [
     'messaging.apps.MessagingConfig',
